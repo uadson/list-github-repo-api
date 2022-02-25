@@ -9,8 +9,6 @@ class Base(models.Model):
 	class Meta:
 		abstract = True
 
-
 class Repository(Base):
 	name = models.CharField('Name:', max_length=200)
 	url = models.URLField('URL:', max_length=200)
-	
