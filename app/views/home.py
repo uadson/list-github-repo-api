@@ -9,7 +9,7 @@ from decouple import config
 
 class HomeView(TemplateView):
 	template_name = 'app/index.html'
-	context_object_name = ''
+	context_object_name = 'data'
 
 	def get_context_data(self, **kwargs):
 
