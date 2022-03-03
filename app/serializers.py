@@ -4,6 +4,6 @@ from app.models import Repository
 
 
 class ListRepoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Repository
-        fields = '__all__'
+	class Meta:
+		model = Repository
+		fields = '__all__'
