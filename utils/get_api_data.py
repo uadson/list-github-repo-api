@@ -1,5 +1,6 @@
 import requests
 import json
+import os
 
 from datetime import datetime
 
@@ -9,85 +10,75 @@ from decouple import config
 class GetApi:
     def __init__(self, user):
         self._user = user
+        self.main_dir = os.getcwd()
+        self.api_dir = os.path.join(self.main_dir, 'api')
+        self.lang_dir = os.path.join(self.main_dir, 'lang')
+        self.repos_dir = os.path.join(self.main_dir, 'repos')
 
     def get_api_repos(self):
         url = requests.get(
             f'https://api.github.com/users/{self._user}/repos'
         )
-        if url.status_code == 200:
-            response = url.text
-            
-            with open('api/data.txt', 'w') as file:
-                for line in response:
-                    file.write(str(line))
-       
-        else:
-            return url.status_code
+        response = url.text
+        with open(os.path.join(self.api_dir, 'data.txt'), 'w') as file:
+            for line in response:
+                file.write(str(line))
 
     def get_api_commits(self):
         user = config('user')
-        with open('api/data.txt', 'r') as file:
+        with open(os.path.join(self.api_dir, 'data.txt'), 'r') as file:
             data = file.read()
             repos = json.loads(data)
             for i in range(len(repos)):
-                
-                url = requests.get(
-                    f'https://api.github.com/repos/{user}/{repos[i]["name"]}/commits'
-                )
-                if url.status_code == 200:
-                    response = url.text
-                
-                    with open(f"repos/{repos[i]['name']}.txt", 'w') as file:
-                        for line in response:
-                            file.write(str(line))
-                else:
-                    return url.status_code
+                url = requests.get(f'https://api.github.com/repos/{user}/{repos[i]["name"]}/commits')
+                response = url.json()
+                with open(os.path.join(self.repos_dir, f"{repos[i]['name']}.txt"), 'w', encoding='utf-8') as file:
+                    for line in response:
+                        file.write(str(line))
 
     def get_api_languages(self):
         user = config('user')
-        with open('api/data.txt', 'r') as file:
+        api_file = os.path.join(self.api_dir, 'data.txt')
+        with open(api_file, 'r') as file:
             data = file.read()
             repos = json.loads(data)
-
             for i in range(len(repos)):
-                url = requests.get(
-                    f'https://api.github.com/repos/{user}/{repos[i]["name"]}/languages'
-                )
-                if url.status_code == 200:
-                    response = url.text
-
-                    with open(f"lang/{repos[i]['name']}_lang.txt", 'w') as file:
-                        for line in response:
-                            file.write(str(line))
+                url = requests.get(f'https://api.github.com/repos/{user}/{repos[i]["name"]}/languages')
+                response = url.text
+                with open(os.path.join(self.lang_dir, f"{repos[i]['name']}_lang.txt"), 'w', encoding='utf-8') as file:
+                    for line in response:
+                        file.write(str(line))
                 
-                else:
-                    return url.status_code
-
     def get_api_data(self):
         api = {}
-
-        with open('api/data.txt', 'r') as file:
+        api_file = os.path.join(self.api_dir, 'data.txt')
+        with open(api_file, 'r') as file:
             data = file.read()
             repos = json.loads(data)
 
             for i in range(len(repos)):
-                with open(f'repos/{repos[i]["name"]}.txt', 'r') as file:
+                with open(os.path.join(self.repos_dir, f'{repos[i]["name"]}.txt'), 'r') as file:
                     data = file.read()
                     commits = json.loads(data)
 
-                with open(f'lang/{repos[i]["name"]}_lang.txt', 'r') as file:
+                with open(os.path.join(self.lang_dir, f'{repos[i]["name"]}_lang.txt'), 'r') as file:
                     data = file.read()
                     langs = json.loads(data)
 
                 date = f"{commits[len(commits) - 1]['commit']['author']['date']}"
                 hour = f"{commits[len(commits) - 1]['commit']['author']['date']}"
+
+                if repos[i]['archived'] == False:
+                    repos[i]['archived'] = 'Ativo'
+                else:
+                    repos[i]['archived'] = 'Arquivado'
                 
                 api[i] = {
                     'name': repos[i]['name'],
                     'url': repos[i]['html_url'],
                     'status': repos[i]['archived'],
                     'commits': len(commits),
-                    'last_commit': datetime.strptime(f'{date[0:10]} {hour[11:19]}', '%d/%m/%Y %H:%M:%S'),
+                    'last_commit': f'{date[0:10]} {hour[11:19]}',
                     'languagens' : [lang for lang in langs]
 
                 }
@@ -101,4 +92,4 @@ if __name__ == '__main__':
     # data.get_api_repos()
     # data.get_api_commits()
     # data.get_api_languages()
-    data.get_api_data()
+    # data.get_api_data()
