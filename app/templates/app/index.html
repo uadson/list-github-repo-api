@@ -4,13 +4,37 @@
 {% block content %}
 
 <div class="container">
-	<select onchange="">
-	  <option value="" selected disabled>Date</option>
-	  <option value="">Oldest</option>
-	  <option value="">Latest</option>
-	</select>
-</div>
 
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+            <div class="form-group">
+            <label>Data</label>
+                <select class="form-group col-md-3" onchange="">
+                  <option value="" selected disabled>Date</option>
+                  <option value="">Oldest</option>
+                  <option value="">Latest</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Status</label>
+                <select class="form-group col-md-3" onchange="">
+                  <option value="" selected disabled>Date</option>
+                  <option value="">Oldest</option>
+                  <option value="">Latest</option>
+                </select>
+            </div>
+            <label>Commits</label>
+            <select class="form-group col-md-3" onchange="">
+              <option value="" selected disabled>Date</option>
+              <option value="">Oldest</option>
+              <option value="">Latest</option>
+            </select>
+        </div>
+      </div>
+    </div>
+</div>
 
 <div class="container">
 <table id="repos" class="display" style="width:100%">
