@@ -91,11 +91,7 @@ class Repository(models.Model):
 				return api_data
 
 		except KeyError:
-			return json.JSONDecodeError(
-				msg='Error',
-				doc='models.py',
-				pos=''
-			)
+			return 'Error'
 	
 	def save(self, *args, **kwargs):
 		self.data = self.get_repo_api()
