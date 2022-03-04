@@ -2,6 +2,17 @@ import requests
 import json
 import os
 
+def getApi():
+    url = 'http://127.0.0.1:8000/api/repos/'
+    response = requests.get(url)
+    return response.json()
+
+def getData():
+    data = getApi()
+    for i in data:
+       api = i.values()
+       print(api[i])
+
 
 class GetApi:
     def __init__(self, user):
@@ -44,6 +55,8 @@ if __name__ == '__main__':
 
     data = GetApi('uadson')
     # data.get_api_repos()
-    data.get_api_commits()
+    # data.get_api_commits()
     # data.get_api_languages()
     # data.get_api_data()
+
+    getData()
