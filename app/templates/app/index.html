@@ -47,6 +47,7 @@
         <thead>
             <tr>
                 <th>Nome</th>
+                <th>Data</th>
                 <th>Url</th>
                 <th>Status</th>
                 <th>Commits</th>
@@ -58,11 +59,12 @@
             {% for obj in data %}
             <tr>
                 <td>{{ obj.name }}</td>
-                <td><a href="{{ obj.url }}">{{ obj.url }}</a></td>
+                <td>{{ obj.date }}</td>
+                <td><a href="{{ obj.url }}" target="noopener noreferrer">{{ obj.url }}</a></td>
                 <td>{{ obj.status }}</td>
                 <td>{{ obj.commits }}</td>
                 <td>{{ obj.last_commit }}</td>
-                <td>{{ obj.languagens }}</td>
+                <td>{{ obj.languages }}</td>
             </tr>
             {% endfor %}
         </tbody>
