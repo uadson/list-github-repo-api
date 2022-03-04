@@ -1,3 +1,5 @@
+from base64 import encode
+from pydoc import doc
 import requests
 import json
 import os
@@ -11,6 +13,7 @@ class GetApi:
     def __init__(self, user):
         self._user = user
         self.main_dir = os.getcwd()
+        # self.main_dir = os.path.join(os.getcwd(), 'utils')
         self.api_dir = os.path.join(self.main_dir, 'api')
         self.lang_dir = os.path.join(self.main_dir, 'lang')
         self.repos_dir = os.path.join(self.main_dir, 'repos')
@@ -68,6 +71,9 @@ class GetApi:
                 date = f"{commits[len(commits) - 1]['commit']['author']['date']}"
                 hour = f"{commits[len(commits) - 1]['commit']['author']['date']}"
 
+                created = f"{repos[i]['created_at']}"
+                hour_created = f"{repos[i]['created_at']}"
+
                 if repos[i]['archived'] == False:
                     repos[i]['archived'] = 'Ativo'
                 else:
@@ -75,6 +81,7 @@ class GetApi:
                 
                 api[i] = {
                     'name': repos[i]['name'],
+                    'data': f'{created[0:10]} {hour_created[11:19]}',
                     'url': repos[i]['html_url'],
                     'status': repos[i]['archived'],
                     'commits': len(commits),
@@ -89,7 +96,7 @@ if __name__ == '__main__':
     user = config('user')
 
     data = GetApi(user)
-    # data.get_api_repos()
-    # data.get_api_commits()
-    # data.get_api_languages()
-    # data.get_api_data()
+    data.get_api_repos()
+    data.get_api_commits()
+    data.get_api_languages()
+    data.get_api_data()
