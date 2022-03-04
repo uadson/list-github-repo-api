@@ -38,7 +38,8 @@ class Repository(models.Model):
 					f'https://api.github.com/repos/{self.user}/{repo_data[i]["name"]}/commits'
 				)
 				if repo_commits.status_code == 200:
-					commits[i]=repo_commits.json()
+					for j in repo_commits:
+						commits[j]= j
 					return commits
 				else:
 					repo_commits.status_code
@@ -63,6 +64,7 @@ class Repository(models.Model):
 			repo_commits = self.get_repo_commits()
 			repo_langs = self.get_repo_lang()
 
+			print(len(repo_commits))
 			api_data = {}
 			if type(repo_data) and type(repo_commits) and type(repo_langs) is not int:
 
