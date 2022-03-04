@@ -11,8 +11,14 @@ class HomeView(TemplateView):
 	context_object_name = 'data'
 
 	def get_context_data(self, **kwargs):
-		repos = Repository.objects.all()
-		response = repos[0].data.values()
-		context = super(HomeView, self).get_context_data(**kwargs)
-		context['data'] = response
-		return context
+		try:
+			repos = Repository.objects.all()
+			response = repos[0].data.values()
+			context = super(HomeView, self).get_context_data(**kwargs)
+			context['data'] = response
+			return context
+		except:
+			response = {}
+			context = super(HomeView, self).get_context_data(**kwargs)
+			context['data'] = response
+			return context 
