@@ -8,9 +8,6 @@ from decouple import config
 from utils.get_api_data import GetApi
 
 
-from django.shortcuts import Http404
-
-
 class Repository(models.Model):
 	user = models.CharField(max_length=20)
 	data = models.JSONField(blank=True)
@@ -64,14 +61,15 @@ class Repository(models.Model):
 			repo_commits = self.get_repo_commits()
 			repo_langs = self.get_repo_lang()
 
-			print(len(repo_commits))
+			print(repo_commits)
+
 			api_data = {}
 			if type(repo_data) and type(repo_commits) and type(repo_langs) is not int:
 
 				for i in range(len(repo_data)):
 
-					# date = f"{repo_commits[len(repo_commits) - 1]['commit']['author']['date']}"
-					# hour = f"{repo_commits[len(repo_commits) - 1]['commit']['author']['date']}"
+					date = f"{repo_commits[len(repo_commits) - 1]['commit']['author']['date']}"
+					hour = f"{repo_commits[len(repo_commits) - 1]['commit']['author']['date']}"
 
 					created = f"{repo_data[i]['created_at']}"
 					hour_created = f"{repo_data[i]['created_at']}"
@@ -87,13 +85,17 @@ class Repository(models.Model):
 						'date': f'{created[0:10]} {hour_created[11:19]}',
 						'status': repo_data[i]['archived'],
 						'commits': len(repo_commits),
-						# 'last_commit': f'{date[0:10]} {hour[11:19]}',
+						'last_commit': f'{date[0:10]} {hour[11:19]}',
 						'languages': repo_langs
 					}
 				return api_data
 
 		except KeyError:
-			return Http404()
+			return json.JSONDecodeError(
+				msg='Error',
+				doc='models.py',
+				pos=''
+			)
 	
 	def save(self, *args, **kwargs):
 		self.data = self.get_repo_api()
