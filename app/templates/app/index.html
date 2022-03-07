@@ -13,6 +13,7 @@
                     <label>Data</label>
                     <select class="form-group col-md-8" onchange="dataRepo(this.value);">
                         <option value="" selected disabled>Data</option>
+                        <option value=""></option>
                         <option value="mais_antigo">Mais Antigo</option>
                         <option value="mais_recente">Mais Recente</option>
                     </select>
@@ -22,6 +23,7 @@
                     <label>Status</label>
                     <select class="form-group col-md-8" onchange="">
                         <option value="" selected disabled>Status</option>
+                        <option value=""></option>
                         <option value="ativo">Ativo</option>
                         <option value="arquivado">Arquivado</option>
                     </select>
@@ -29,9 +31,10 @@
 
 
                 <div class="col-md-3">
-                    <label>Commits</label>
+                    <label>Atualização</label>
                     <select class="form-group col-md-8" onchange="">
-                        <option value="" selected disabled>Commits</option>
+                        <option value="" selected disabled>Atualização</option>
+                        <option value=""></option>
                         <option value="mais_antigo">Mais Antigo</option>
                         <option value="mais_recente">Mais Recente</option>
                     </select>
@@ -48,10 +51,10 @@
             <tr>
                 <th>Nome</th>
                 <th>Data</th>
+                <th>Fork <span style="font-size: 12px; font-style: italic;">(origem é outro projeto)</span></th>
                 <th>Url</th>
                 <th>Status</th>
-                <th>Commits</th>
-                <th>Último Commit</th>
+                <th>Última Atualização</th>
                 <th>Linguagens</th>
             </tr>
         </thead>
@@ -60,11 +63,11 @@
             <tr>
                 <td>{{ obj.name }}</td>
                 <td>{{ obj.date }}</td>
+                <td style="text-align: center; font-style: italic;">{{ obj.fork }}</td>
                 <td><a href="{{ obj.url }}" target="noopener noreferrer">{{ obj.url }}</a></td>
-                <td>{{ obj.status }}</td>
-                <td>{{ obj.commits }}</td>
-                <td>{{ obj.last_commit }}</td>
-                <td>{{ obj.languages }}</td>
+                <td style="text-align: center; font-style: italic;">{{ obj.status }}</td>
+                <td>{{ obj.updated }}</td>
+                <td style="text-align: center; font-style: italic;">{{ obj.languages }}</td>
             </tr>
             {% endfor %}
         </tbody>
