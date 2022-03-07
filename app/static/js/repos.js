@@ -31,5 +31,5 @@ function update_table(data) {
         all_rows = all_rows + row;
     });
 
-    $('#myTable tbody').html(all_rows);
+    $('repos tbody').html(all_rows);
 }
