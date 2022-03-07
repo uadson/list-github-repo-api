@@ -28,64 +28,71 @@ class Repository(models.Model):
 		else:
 			return response.status_code
 
-	def get_repo_commits(self):
-		repo_data = self.get_repo()
-		commits = {}
-		for i in range(len(repo_data)):
-			response = requests.get(
-				f'https://api.github.com/repos/{USER}/{repo_data[i]["name"]}/commits',
-				auth=(USER, TOKEN)
-			)
-			commits[i]=response.json()
-		return commits
-
 	def get_repo_lang(self):
 		repo_data = self.get_repo()
+		data = {}
+		langs = {}
+
 		for i in range(len(repo_data)):
 			response = requests.get(
 				f'https://api.github.com/repos/{USER}/{repo_data[i]["name"]}/languages',
 				auth=(USER, TOKEN)
 			)
-			if response.status_code == 200:
-				return response.json()
+			data[i] = response.json()
+
+		for i in range(len(data.items())):
+			if len(data.get(i).keys()) > 1:
+				langs[i] = [lang for lang in data.get(i).keys()]
+				langs[i] = ', '.join(langs[i])
+			elif len(data.get(i).keys()) == 1:
+				langs[i] = [lang for lang in data.get(i).keys()]
+				langs[i] = ''.join(langs[i])
 			else:
-				return response.status_code
+				langs[i] = '-'
+
+		return langs
 
 	def get_repo_api(self):
 		try:
 			repo_data = self.get_repo()
-			repo_commits = self.get_repo_commits()
-			print(repo_commits[0][0]['commit']['author']['date'])
 			repo_langs = self.get_repo_lang()
 
 			api_data = {}
 
 			for i in range(len(repo_data)):
 
-				date = f"{repo_commits[len(repo_commits[i]) - 1][0]['commit']['author']['date']}"
-				hour = f"{repo_commits[len(repo_commits[i]) - 1][0]['commit']['author']['date']}"
-
 				created = f"{repo_data[i]['created_at']}"
 				hour_created = f"{repo_data[i]['created_at']}"
+
+				updated = f"{repo_data[i]['updated_at']}"
+				hour_updated = f"{repo_data[i]['updated_at']}"
+
+				if repo_data[i]['fork'] == True:
+					repo_data[i]['fork'] = 'Sim'
+				else:
+					repo_data[i]['fork'] = 'Não'
 
 				if repo_data[i]['archived'] == False:
 					repo_data[i]['archived'] = 'Ativo'
 				else:
-					repo_data[i]['archived'] = 'Arquivado' 
+					repo_data[i]['archived'] = 'Arquivado'
+
 
 				api_data[i] = {
 					'name': repo_data[i]['name'],
 					'url': repo_data[i]['html_url'],
 					'date': f'{created[0:10]} {hour_created[11:19]}',
+					'fork': repo_data[i]['fork'],
 					'status': repo_data[i]['archived'],
-					'commits': len(repo_commits),
-					'last_commit': f'{date[0:10]} {hour[11:19]}',
-					'languages': repo_langs
+					'updated': f'{updated[0:10]} {hour_updated[11:19]}',
+					'languages': repo_langs.get(i)
 				}
-				return api_data
 
-		except KeyError:
-			return 'Error'
+			
+			return api_data
+
+		except Exception as error:
+			return error
 	
 	def save(self, *args, **kwargs):
 		self.data = self.get_repo_api()
